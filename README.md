@@ -43,7 +43,20 @@ Tedography later — no database, just files.
 - `Views/DetailView.swift` + `AudioPlaybackView.swift` — full photo + audio playback
 - `Views/SettingsView.swift` — audio duration setting
 
+## Sharing to Tedography
+
+Gallery supports multi-select (`Select` button, top right); Detail has a
+share icon for a single capture. Both package the photo + audio +
+metadata.json into one `.zip` (one subfolder per capture) and hand it to
+the standard iOS share sheet, so AirDrop / Messages / Save to Files all
+work the same way they do from the Photos app today. A Tedography-side
+importer to unzip and ingest these is still to be built.
+
+Uses [ZIPFoundation](https://github.com/weichsel/ZIPFoundation) (SPM
+dependency, declared in project.yml) to build the zip — Xcode will
+resolve it automatically on first build (needs network access once).
+
 ## Requirements not yet implemented
 
-- Nothing pending — pinch-to-zoom, early-stop-via-shutter, and configurable
-  duration are all wired up in this scaffold.
+- Tedography-side import of the shared zip format
+- Direct upload from LoudPhoto to Tedography's backend (currently AirDrop/Messages-based, matching the existing photo workflow)

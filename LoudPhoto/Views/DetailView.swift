@@ -3,6 +3,8 @@ import UIKit
 
 struct DetailView: View {
     let item: CaptureItem
+    @State private var shareItem: IdentifiableURL?
+    @State private var isExporting = false
 
     var body: some View {
         ScrollView {
@@ -30,5 +32,35 @@ struct DetailView: View {
         }
         .navigationTitle("Capture")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    exportItem()
+                } label: {
+                    if isExporting {
+                        ProgressView()
+                    } else {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                }
+                .disabled(isExporting)
+            }
+        }
+        .sheet(item: $shareItem) { item in
+            ShareSheet(activityItems: [item.url])
+        }
+    }
+
+    private func exportItem() {
+        isExporting = true
+        DispatchQueue.global(qos: .userInitiated).async {
+            let zipURL = CaptureExporter.makeZip(for: [item])
+            DispatchQueue.main.async {
+                isExporting = false
+                if let zipURL {
+                    shareItem = IdentifiableURL(url: zipURL)
+                }
+            }
+        }
     }
 }
