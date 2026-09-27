@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+*.xcuserdatad/
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+DerivedData/
+build/
+
+# XcodeGen: the project is generated from project.yml — don't commit the
+# generated artifacts, regenerate with `xcodegen generate` instead.
+*.xcodeproj/
+Generated/
+
+# Swift Package Manager
+.swiftpm/
+.build/
+
+# CocoaPods (not used yet, but harmless to have)
+Pods/
+
+# Secrets / local config (none currently exist, but guard against future ones)
+*.xcconfig.local
+.env
+.env.*
+*.p12
+*.mobileprovision
+*secrets*

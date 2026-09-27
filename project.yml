@@ -1,0 +1,28 @@
+name: LoudPhoto
+options:
+  bundleIdPrefix: com.tedshaffer
+  deploymentTarget:
+    iOS: "17.0"
+targets:
+  LoudPhoto:
+    type: application
+    platform: iOS
+    sources:
+      - path: LoudPhoto
+    info:
+      path: Generated/Info.plist
+      properties:
+        UILaunchScreen: {}
+        NSCameraUsageDescription: "LoudPhoto needs camera access to take photos."
+        NSMicrophoneUsageDescription: "LoudPhoto records a short audio clip the moment you take a photo."
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.tedshaffer.loudphoto
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    scheme:
+      testTargets: []
+      gatherCoverageData: false
