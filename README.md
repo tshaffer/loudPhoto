@@ -23,7 +23,11 @@ into Tedography.
 Each capture is stored in the app's Documents/Captures directory as three
 files sharing a UUID basename:
 
-- `<uuid>.jpg` — the photo
+- `<uuid>.heic` — the photo (HEIC/HEVC on supported hardware; falls back to
+  `.jpg` on the Simulator or older devices where HEIC capture isn't
+  available). Matches how Tedography already treats HEIC — as an archival
+  original it derives a display JPEG from, same as it does for RAW camera
+  files.
 - `<uuid>.m4a` — the linked audio clip (absent if capture had no audio,
   which shouldn't normally happen, or audio failed)
 - `<uuid>.json` — metadata (CaptureItem: dateCreated, configuredDurationSeconds,

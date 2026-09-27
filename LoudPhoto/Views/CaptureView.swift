@@ -136,9 +136,9 @@ struct CaptureView: View {
             return
         }
 
-        cameraService.capturePhoto { data in
+        cameraService.capturePhoto { data, photoExtension in
             guard let data else { return }
-            let item = store.saveNewCapture(photoData: data, configuredDuration: audioDuration)
+            let item = store.saveNewCapture(photoData: data, photoExtension: photoExtension, configuredDuration: audioDuration)
 
             audioService.start(duration: audioDuration) { url, actualDuration in
                 if let url {

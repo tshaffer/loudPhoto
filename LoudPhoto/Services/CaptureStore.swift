@@ -40,9 +40,9 @@ final class CaptureStore: ObservableObject {
     }
 
     @discardableResult
-    func saveNewCapture(photoData: Data, configuredDuration: Double) -> CaptureItem {
+    func saveNewCapture(photoData: Data, photoExtension: String, configuredDuration: Double) -> CaptureItem {
         let id = UUID()
-        let photoFilename = "\(id.uuidString).jpg"
+        let photoFilename = "\(id.uuidString).\(photoExtension)"
         try? photoData.write(to: url(for: photoFilename))
 
         let item = CaptureItem(

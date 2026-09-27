@@ -13,7 +13,11 @@ final class CameraService: NSObject, ObservableObject {
     private var videoDeviceInput: AVCaptureDeviceInput?
     private let sessionQueue = DispatchQueue(label: "com.tedshaffer.loudphoto.session")
 
-    private var photoCaptureCompletion: ((Data?) -> Void)?
+    /// (photo data, file extension to save it as — "heic" when the device/output
+    /// supports HEVC photo encoding, "jpg" as a fallback for older hardware or
+    /// the Simulator).
+    private var photoCaptureCompletion: ((Data?, String) -> Void)?
+    private var pendingPhotoExtension: String = "jpg"
 
     override init() {
         super.init()
@@ -58,9 +62,19 @@ final class CameraService: NSObject, ObservableObject {
         }
     }
 
-    func capturePhoto(completion: @escaping (Data?) -> Void) {
+    func capturePhoto(completion: @escaping (Data?, String) -> Void) {
         photoCaptureCompletion = completion
-        let settings = AVCapturePhotoSettings()
+
+        // Prefer HEIC (HEVC-encoded) — smaller files at equal/better quality,
+        // and what Tedography already treats as an archival original (same
+        // as RAW camera files), generating its own JPEG for web display.
+        // Falls back to JPEG on hardware/Simulator that doesn't support it.
+        let usesHEIC = photoOutput.availablePhotoCodecTypes.contains(.hevc)
+        pendingPhotoExtension = usesHEIC ? "heic" : "jpg"
+
+        let settings: AVCapturePhotoSettings = usesHEIC
+            ? AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
+            : AVCapturePhotoSettings()
         settings.flashMode = flashMode
         photoOutput.capturePhoto(with: settings, delegate: self)
     }
@@ -106,8 +120,9 @@ final class CameraService: NSObject, ObservableObject {
 extension CameraService: AVCapturePhotoCaptureDelegate {
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         let data = photo.fileDataRepresentation()
+        let fileExtension = pendingPhotoExtension
         DispatchQueue.main.async {
-            self.photoCaptureCompletion?(data)
+            self.photoCaptureCompletion?(data, fileExtension)
             self.photoCaptureCompletion = nil
         }
     }
